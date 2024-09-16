@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customized T-Shirt Order Form</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        fieldset {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        legend {
+            font-weight: bold;
+            color: #2c3e50;
+            padding: 0 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"],
+        input[type="reset"],
+        button {
+            background-color: #3498db;
+            color: #ffffff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        input[type="submit"]:hover,
+        input[type="reset"]:hover,
+        button:hover {
+            background-color: #2980b9;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: -8px;
+            margin-bottom: 10px;
+        }
+        #receipt {
+            display: none;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #receipt h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        #receipt ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #receipt li {
+            margin-bottom: 10px;
+        }
+        #receipt strong {
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+<h1>Order Your Customized T-Shirt</h1>
+<form id="orderForm" action="/submit-order" method="POST"> <!-- Replace with actual action URL -->
+    <fieldset>
+        <legend>Customize Your T-Shirt</legend>
+        <label for="tagline">Tagline on the Shirt:</label>
+        <input type="text" id="tagline" name="tagline" placeholder="Enter your tagline" required pattern="[A-Za-z0-9\s]+" title="Only letters, numbers, and spaces are allowed." maxlength="50">
+        <span id="taglineError" class="error"></span>
+
+        <label for="color">Color:</label>
+        <select id="color" name="color" required>
+            <option value="">Select a color</option>
+            <option value="red">Red</option>
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+            <option value="black">Black</option>
+            <option value="white">White</option>
+        </select>
+
+        <label for="size">Size:</label>
+        <select id="size" name="size" required>
+            <option value="">Select a size</option>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+            <option value="xlarge">X-Large</option>
+        </select>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" min="1" max="100" required>
+
+        <label for="delivery-date">Delivery Date:</label>
+        <input type="date" id="delivery-date" name="delivery-date" required>
+    </fieldset>
+
+    <fieldset>
+        <legend>Delivery Details</legend>
+        <label for="recipient-name">Recipient's Name:</label>
+        <input type="text" id="recipient-name" name="recipient-name" placeholder="Enter recipient's name" required>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" placeholder="Enter delivery address" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number.">
+        <span id="phoneError" class="error"></span>
+    </fieldset>
+
+    <label for="comments">Additional Comments:</label>
+    <textarea id="comments" name="comments" rows="4" placeholder="Any additional comments or special instructions"></textarea>
+
+    <button type="submit">Place Order</button>
+    <button type="reset">Reset Form</button>
+</form>
+
+<div id="receipt"></div>
+
+<script>
+document.getElementById('orderForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (validateForm()) {
+        generateReceipt();
+    }
+});
+
+function validateForm() {
+    let isValid = true;
+
+    // Validate tagline
+    const tagline = document.getElementById('tagline');
+    if (tagline.value.length > 50) {
+        document.getElementById('taglineError').textContent = 'Tagline must be 50 characters or less';
+        isValid = false;
+    } else {
+        document.getElementById('taglineError').textContent = '';
+    }
+
+    // Validate phone number
+    const phone = document.getElementById('phone');
+    if (!/^\d{10}$/.test(phone.value)) {
+        document.getElementById('phoneError').textContent = 'Please enter a valid 10-digit phone number';
+        isValid = false;
+    } else {
+        document.getElementById('phoneError').textContent = '';
+    }
+
+    return isValid;
+}
+
+function generateReceipt() {
+    const receiptDiv = document.getElementById('receipt');
+    const formData = new FormData(document.getElementById('orderForm'));
+    const receiptDate = new Date().toLocaleString();
+
+    let receiptHTML = `
+        <h2>Order Confirmation Receipt</h2>
+        <p><strong>Date:</strong> ${receiptDate}</p>
+        <h3>Order Details:</h3>
+        <ul>
+    `;
+
+    for (let [key, value] of formData.entries()) {
+        receiptHTML += `<li><strong>${key}:</strong> ${value}</li>`;
+    }
+
+    receiptHTML += `
+        </ul>
+        <p>Thank you for your order! We will process it shortly.</p>
+    `;
+
+    receiptDiv.innerHTML = receiptHTML;
+    receiptDiv.style.display = 'block';
+}
+</script>
+</body>
+</html>
