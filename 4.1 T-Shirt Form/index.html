@@ -106,7 +106,7 @@
 </head>
 <body>
 <h1>Order Your Customized T-Shirt</h1>
-<form id="orderForm" action="/submit-order" method="POST"> <!-- Replace with actual action URL -->
+<form id="orderForm" action="/submit-order" method="POST"> 
     <fieldset>
         <legend>Customize Your T-Shirt</legend>
         <label for="tagline">Tagline on the Shirt:</label>
@@ -175,7 +175,7 @@ document.getElementById('orderForm').addEventListener('submit', function(e) {
 function validateForm() {
     let isValid = true;
 
-    // Validate tagline
+    
     const tagline = document.getElementById('tagline');
     if (tagline.value.length > 50) {
         document.getElementById('taglineError').textContent = 'Tagline must be 50 characters or less';
@@ -184,7 +184,7 @@ function validateForm() {
         document.getElementById('taglineError').textContent = '';
     }
 
-    // Validate phone number
+    
     const phone = document.getElementById('phone');
     if (!/^\d{10}$/.test(phone.value)) {
         document.getElementById('phoneError').textContent = 'Please enter a valid 10-digit phone number';
